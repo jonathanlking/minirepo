@@ -201,13 +201,13 @@ def setup_system_c_dependencies():
         repository = "@haskell_nixpkgs",
         attribute_paths = [
             "staticHaskell.postgresql",
-            "staticHaskell.postgresql.lib",
         ],
-				libs = [
-					"lib/libpq.so*",
-					"lib/libpq.dylib",
-					"lib/libpq.a",
-				],
+        extra_outputs = ["lib"],
+        libs = [
+            "lib/libpq.so*",
+            "lib/libpq.dylib",
+            "lib/libpq.a",
+        ],
         cc_library = dict(
             name = "c_lib",
             srcs = [":lib"],
@@ -242,9 +242,9 @@ def setup_system_c_dependencies():
         name = "haskell_nixpkgs_crypto",
         repository = "@haskell_nixpkgs",
         attribute_paths = [
-            "staticHaskell.openssl_both.dev",
-            "staticHaskell.openssl_both.out",
+            "staticHaskell.openssl_both",
         ],
+        extra_outputs = ["dev", "out"],
         libs = [
           "lib/libcrypto.*",
         ],
@@ -262,9 +262,9 @@ def setup_system_c_dependencies():
         name = "haskell_nixpkgs_openssl",
         repository = "@haskell_nixpkgs",
         attribute_paths = [
-            "staticHaskell.openssl_both.dev",
-            "staticHaskell.openssl_both.out",
+            "staticHaskell.openssl_both",
         ],
+        extra_outputs = ["dev", "out"],
         libs = [
           "lib/libssl.*",
         ],
@@ -283,9 +283,9 @@ def setup_system_c_dependencies():
         name = "haskell_nixpkgs_zlib",
         repository = "@haskell_nixpkgs",
         attribute_paths = [
-            "staticHaskell.zlib_both.dev",
-            "staticHaskell.zlib_both.out",
+            "staticHaskell.zlib_both",
         ],
+        extra_outputs = ["dev", "out"],
         cc_library = dict(
             name = "c_lib",
             srcs = [":lib"],
@@ -304,13 +304,22 @@ def nixpkgs_cc_library_package(
     repository,
     cc_library,
     attribute_paths = None,
+    extra_outputs = None,
     libs = None,
     **kwargs):
 
     if attribute_paths:
+        # We have to quote the extraOutputsToInstall options (e.g. "dev", "out",
+        # etc.)
+        extra_outputs = ['"{}"'.format(o) for o in extra_outputs] if extra_outputs else []
+
         nix_file_content = "\n".join([
             "with (import <nixpkgs> { config = {}; overlays = []; });",
-            'buildEnv {name = "%s"; paths = [ %s ]; }' % (name, " ".join(attribute_paths)),
+            "buildEnv {",
+            '  name = "{}";'.format(name),
+            "  paths = [ {} ];".format(" ".join(attribute_paths)),
+            "  extraOutputsToInstall = [ {} ];".format(" ".join(extra_outputs)),
+            "}",
         ])
         kwargs = dict(kwargs, nix_file_content = nix_file_content)
 
