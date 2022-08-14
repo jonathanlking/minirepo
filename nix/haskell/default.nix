@@ -14,14 +14,14 @@ let
   # Nixpkgs pin, we should get packages which a. work more often than not and b.
   # are more frequently cached by standard Nixpkgs infrastructure.
   baseNixpkgs = builtins.fetchTarball {
-    name = "nixos-unstable-2020-06-22";
+    name = "nixos-unstable-2020-12-22";
 
     # Update the "name" attribute if/when you change this
-    url = https://github.com/NixOS/nixpkgs/archive/dca182df882db483cea5bb0115fea82304157ba1.tar.gz;
+    url = https://github.com/NixOS/nixpkgs/archive/2a058487cb7a50e7650f1657ee0151a19c59ec3b.tar.gz;
 
     # You can obtain an appropriate hash using
     # `nix-prefetch-url --unpack <url>`.
-    sha256 = "0193bpsg1ssr93ihndyv7shz6ivsm8cvaxxl72mc7vfb8d1bwx55";
+    sha256 = "1h8c0mk6jlxdmjqch6ckj30pax3hqh6kwjlvp2021x3z4pdzrn9p";
   };
 
   # `static-haskell-nix` is a repository maintained by @nh2 that documents and
@@ -31,16 +31,21 @@ let
   # will be building the rest), but we need it nonetheless (thanks, @nh2!). So
   # we pin a version here that exposes the GHC version we are interested in.
   staticHaskellNixpkgs = builtins.fetchTarball
-    https://github.com/nh2/static-haskell-nix/archive/dbce18f4808d27f6a51ce31585078b49c86bd2b5.tar.gz;
+    https://github.com/nh2/static-haskell-nix/archive/749707fc90b781c3e653e67917a7d571fe82ae7b.tar.gz;
 
   # The `static-haskell-nix` repository contains several entry points for e.g.
   # setting up a project in which Nix is used solely as the build/package
   # management tool. We are only interested in the set of packages that underpin
   # these entry points, which are exposed in the `survey` directory's
   # `approachPkgs` property.
-  staticHaskellPkgs = (
-    import (staticHaskellNixpkgs + "/survey/default.nix") {}
-  ).approachPkgs;
+  staticHaskellPkgs =
+    let
+      p = import (staticHaskellNixpkgs + "/survey/default.nix") {
+        compiler = "ghc865";
+        normalPkgs = import baseNixpkgs {};
+      };
+    in
+      p.approachPkgs;
 
   # With all the pins and imports done, it's time to build our overlay, in which
   # we are interested in:
@@ -110,6 +115,8 @@ let
         };
 
     });
+
+
   };
 
 in
