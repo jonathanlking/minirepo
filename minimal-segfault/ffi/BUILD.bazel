@@ -1,0 +1,16 @@
+load("@rules_haskell//haskell:cabal.bzl", "haskell_cabal_library")
+
+haskell_cabal_library(
+    name = "ffi",
+    srcs = [
+        "FFI.hs",
+        "ffi.cabal",
+    ],
+    tools = [],
+    verbose = False,
+    version = "1",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@haskell_nixpkgs_crypto//:c_lib",
+    ],
+)
