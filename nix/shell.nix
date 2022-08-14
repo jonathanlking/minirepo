@@ -46,7 +46,7 @@ in
   mkShell {
     buildInputs = [
       # General-purpose tooling
-      bazel
+      bazel_4
       docker
       git
       go
