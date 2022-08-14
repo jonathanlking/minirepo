@@ -1,0 +1,29 @@
+load("@rules_haskell//haskell:defs.bzl", "haskell_binary")
+
+haskell_binary(
+    name = "bin-no-th",
+    srcs = ["bin-no-th/Main.hs"],
+    compiler_flags = [
+        "-v4",  # Used to help with debugging
+        "-optl-static",
+    ],
+    deps = [
+        "//minimal-segfault/ffi",
+        "@stackage//:base",
+    ],
+)
+
+haskell_binary(
+    name = "bin-th",
+    srcs = ["bin-th/Main.hs"],
+    compiler_flags = [
+        "-v4",  # Used to help with debugging
+        "-optl-static",
+    ],
+    deps = [
+        "//minimal-segfault/ffi",
+        "@stackage//:base",
+        "@stackage//:template-haskell",
+    ],
+)
+
