@@ -84,7 +84,11 @@ let
           ${oldAttrs.preConfigure or ""}
           echo "GhcLibHcOpts += -fPIC -fexternal-dynamic-refs" >> mk/build.mk
           echo "GhcRtsHcOpts += -fPIC -fexternal-dynamic-refs" >> mk/build.mk
+          echo "GhcLibHcOpts += -g3" >> mk/build.mk
+          echo "GhcRtsHcOpts += -g3" >> mk/build.mk
+          echo "STRIP_CMD = :" >> mk/build.mk
         '';
+        dontStrip = true;
       });
 
       # A custom derivation that contains both static and dynamic libraries.
