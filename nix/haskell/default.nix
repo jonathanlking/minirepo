@@ -56,7 +56,8 @@ let
   staticHaskellPkgs =
     let
       p = import (staticHaskellNixpkgs + "/survey/default.nix") {
-        compiler = "ghc865";
+        compiler = "ghc884";
+        defaultCabalPackageVersionComingWithGhc = "Cabal_3_2_1_0";
         normalPkgs = patchedBaseNixpkgs;
       };
     in
