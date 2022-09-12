@@ -14,5 +14,4 @@ jobs:
       with:
         name: jonathanlking-minirepo
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix-build
-    - run: nix-shell --run "echo OK"
+    - run: bazel build //...
