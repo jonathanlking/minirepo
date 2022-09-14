@@ -24,6 +24,21 @@ let
     sha256 = "1h8c0mk6jlxdmjqch6ckj30pax3hqh6kwjlvp2021x3z4pdzrn9p";
   };
 
+  # gdb is broken in this version of nixpkgs
+  # See: https://github.com/NixOS/nixpkgs/issues/104133
+  patchGdb = self: super: {
+    gdb = super.gdb.overrideAttrs(oldAttrs: rec {
+      version = "9.2";
+      src = (import baseNixpkgs {}).fetchurl {
+        url = "mirror://gnu/gdb/gdb-9.2.tar.xz";
+        sha256 = "sha256-NgzXrnm3dpiOidj5oByYXQsfohx2ekKV5fiMtJF1xVU=";
+      };
+    });
+
+  };
+
+  patchedBaseNixpkgs = import baseNixpkgs { overlays = [patchGdb]; };
+
   # `static-haskell-nix` is a repository maintained by @nh2 that documents and
   # implements the litany of tricks necessary to construct a Nix-Haskell
   # toolchain capable of building fully-statically-linked binaries. We are
@@ -42,7 +57,7 @@ let
     let
       p = import (staticHaskellNixpkgs + "/survey/default.nix") {
         compiler = "ghc865";
-        normalPkgs = import baseNixpkgs {};
+        normalPkgs = patchedBaseNixpkgs;
       };
     in
       p.approachPkgs;
@@ -122,5 +137,5 @@ let
 in
   args@{ overlays ? [], ... }:
     import baseNixpkgs (args // {
-      overlays = [overlay] ++ overlays;
+      overlays = [patchGdb overlay] ++ overlays;
     })
