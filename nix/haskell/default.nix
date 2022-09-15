@@ -107,6 +107,8 @@ let
           echo "GhcRtsHcOpts += -fPIC -fexternal-dynamic-refs" >> mk/build.mk
           echo "GhcLibHcOpts += -g3" >> mk/build.mk
           echo "GhcRtsHcOpts += -g3" >> mk/build.mk
+          echo "GhcHcOpts += -DDEBUG -debug" >> mk/build.mk
+          echo "EXTRA_HC_OPTS += -debug" >> mk/build.mk
           echo "STRIP_CMD = :" >> mk/build.mk
         '';
         dontStrip = true;
