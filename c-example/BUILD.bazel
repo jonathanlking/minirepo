@@ -1,0 +1,14 @@
+cc_binary(
+    name = "example",
+    linkstatic = True,
+    srcs = ["example.c"],
+    visibility = ["//visibility:public"],
+    features = [
+      "-pie",
+      "fully_static_link"
+    ],
+    copts = ["-g3"],
+    deps = [
+      "@haskell_nixpkgs_crypto//:c_lib",
+    ],
+)

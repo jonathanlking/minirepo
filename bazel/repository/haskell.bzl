@@ -246,7 +246,7 @@ def setup_system_c_dependencies():
             "staticHaskell.openssl_both.out",
         ],
         libs = [
-          "lib/libcrypto.*",
+          "lib/libcrypto.a",
         ],
         cc_library = dict(
             name = "c_lib",
@@ -266,7 +266,7 @@ def setup_system_c_dependencies():
             "staticHaskell.openssl_both.out",
         ],
         libs = [
-          "lib/libssl.*",
+          "lib/libssl.a",
         ],
         cc_library = dict(
             name = "c_lib",
