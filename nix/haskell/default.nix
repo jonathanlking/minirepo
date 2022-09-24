@@ -14,14 +14,14 @@ let
   # Nixpkgs pin, we should get packages which a. work more often than not and b.
   # are more frequently cached by standard Nixpkgs infrastructure.
   baseNixpkgs = builtins.fetchTarball {
-    name = "nixos-unstable-2021-10-31";
+    name = "nixos-unstable-2022-08-09";
 
     # Update the "name" attribute if/when you change this
-    url = https://github.com/NixOS/nixpkgs/archive/9303cc044586dd40599233454f1fd79176584c0f.tar.gz;
+    url = https://github.com/NixOS/nixpkgs/archive/9f15d6c3a74d2778c6e1af67947c95f100dc6fd2.tar.gz;
 
     # You can obtain an appropriate hash using
     # `nix-prefetch-url --unpack <url>`.
-    sha256 = "0bgdk4zw9m42i3cva55a2bp2z16kd6xchz08vl0zg8d0mr3kk0q3";
+    sha256 = "14axdmi3kb6rlib39ik42yq907bm66x6vzswm5w1rsnw9vzgm31a";
   };
 
   # `static-haskell-nix` is a repository maintained by @nh2 that documents and
@@ -43,8 +43,8 @@ let
   staticHaskellPkgs =
     let
       p = import (staticHaskellNixpkgs + "/survey/default.nix") {
-        compiler = "ghc8107";
-        defaultCabalPackageVersionComingWithGhc = "Cabal_3_2_1_0";
+        compiler = "ghc924";
+        defaultCabalPackageVersionComingWithGhc = "Cabal_3_6_3_0";
         normalPkgs = import baseNixpkgs { overlays = []; };
       };
     in

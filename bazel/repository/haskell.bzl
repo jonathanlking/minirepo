@@ -42,7 +42,7 @@ def setup_haskell():
 
     # Pull GHC from the Haskell Nixpkgs pin, which provides version 8.6.5.
     haskell_register_ghc_nixpkgs(
-        version = "8.10.7",
+        version = "9.2.4",
         repository = "@haskell_nixpkgs",
         attribute_path = "staticHaskell.ghc",
 
@@ -74,7 +74,7 @@ def setup_haskell():
     # formats).
     stack_snapshot(
         name = "stackage",
-        snapshot = "lts-18.28",
+        snapshot = "nightly-2022-09-24",
 
         # The `stack` binary is the one we defined in
         # `setup_build_time_dependencies` and is pinned by virtue of coming from
