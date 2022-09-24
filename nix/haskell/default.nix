@@ -14,30 +14,15 @@ let
   # Nixpkgs pin, we should get packages which a. work more often than not and b.
   # are more frequently cached by standard Nixpkgs infrastructure.
   baseNixpkgs = builtins.fetchTarball {
-    name = "nixos-unstable-2020-12-22";
+    name = "nixos-unstable-2021-10-31";
 
     # Update the "name" attribute if/when you change this
-    url = https://github.com/NixOS/nixpkgs/archive/2a058487cb7a50e7650f1657ee0151a19c59ec3b.tar.gz;
+    url = https://github.com/NixOS/nixpkgs/archive/9303cc044586dd40599233454f1fd79176584c0f.tar.gz;
 
     # You can obtain an appropriate hash using
     # `nix-prefetch-url --unpack <url>`.
-    sha256 = "1h8c0mk6jlxdmjqch6ckj30pax3hqh6kwjlvp2021x3z4pdzrn9p";
+    sha256 = "0bgdk4zw9m42i3cva55a2bp2z16kd6xchz08vl0zg8d0mr3kk0q3";
   };
-
-  # gdb is broken in this version of nixpkgs
-  # See: https://github.com/NixOS/nixpkgs/issues/104133
-  patchGdb = self: super: {
-    gdb = super.gdb.overrideAttrs(oldAttrs: rec {
-      version = "9.2";
-      src = (import baseNixpkgs {}).fetchurl {
-        url = "mirror://gnu/gdb/gdb-9.2.tar.xz";
-        sha256 = "sha256-NgzXrnm3dpiOidj5oByYXQsfohx2ekKV5fiMtJF1xVU=";
-      };
-    });
-
-  };
-
-  patchedBaseNixpkgs = import baseNixpkgs { overlays = [patchGdb]; };
 
   # `static-haskell-nix` is a repository maintained by @nh2 that documents and
   # implements the litany of tricks necessary to construct a Nix-Haskell
@@ -45,8 +30,10 @@ let
   # generally only after the GHC derivation from that repository (since Bazel
   # will be building the rest), but we need it nonetheless (thanks, @nh2!). So
   # we pin a version here that exposes the GHC version we are interested in.
-  staticHaskellNixpkgs = builtins.fetchTarball
-    https://github.com/nh2/static-haskell-nix/archive/749707fc90b781c3e653e67917a7d571fe82ae7b.tar.gz;
+  staticHaskellNixpkgs = builtins.fetchTarball {
+    url = https://github.com/nh2/static-haskell-nix/archive/bd66b86b72cff4479e1c76d5916a853c38d09837.tar.gz;
+    sha256 = "0rnsxaw7v27znsg9lgqk1i4007ydqrc8gfgimrmhf24lv6galbjh";
+  };
 
   # The `static-haskell-nix` repository contains several entry points for e.g.
   # setting up a project in which Nix is used solely as the build/package
@@ -56,9 +43,9 @@ let
   staticHaskellPkgs =
     let
       p = import (staticHaskellNixpkgs + "/survey/default.nix") {
-        compiler = "ghc884";
+        compiler = "ghc8107";
         defaultCabalPackageVersionComingWithGhc = "Cabal_3_2_1_0";
-        normalPkgs = patchedBaseNixpkgs;
+        normalPkgs = import baseNixpkgs { overlays = []; };
       };
     in
       p.approachPkgs;
@@ -140,5 +127,5 @@ let
 in
   args@{ overlays ? [], ... }:
     import baseNixpkgs (args // {
-      overlays = [patchGdb overlay] ++ overlays;
+      overlays = [overlay] ++ overlays;
     })
