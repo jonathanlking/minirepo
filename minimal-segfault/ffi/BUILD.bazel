@@ -11,6 +11,7 @@ haskell_cabal_library(
     version = "1",
     visibility = ["//visibility:public"],
     deps = [
+        "@haskell_nixpkgs_crypto_dynamic//:c_lib",
         "@haskell_nixpkgs_crypto//:c_lib",
     ],
 )

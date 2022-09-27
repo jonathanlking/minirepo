@@ -239,6 +239,26 @@ def setup_system_c_dependencies():
     #   `zlib_both` package, which is already provided by `static-haskell-nix`.
     #
     nixpkgs_cc_library_package(
+        name = "haskell_nixpkgs_crypto_dynamic",
+        repository = "@haskell_nixpkgs",
+        attribute_paths = [
+            "staticHaskell.openssl_both",
+        ],
+        extra_outputs = ["dev", "out"],
+        libs = [
+          "lib/libcrypto.so*",
+        ],
+        cc_library = dict(
+            name = "c_lib",
+            srcs = [":lib"],
+            hdrs = [":include"],
+            strip_include_prefix = "include",
+            visibility = ["//visibility:public"],
+            linkstatic = True,
+        ),
+    )
+
+    nixpkgs_cc_library_package(
         name = "haskell_nixpkgs_crypto",
         repository = "@haskell_nixpkgs",
         attribute_paths = [
